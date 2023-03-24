@@ -1,0 +1,4 @@
+nc -l 2222 > a_un_archivo <---- donde queremos enviar los datos
+
+dd if=/dev/fd0 | nc 192.168.2.2:2222 <---- equipo que queremos clonar
+

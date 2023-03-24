@@ -1,0 +1,137 @@
+
+
+	CIRCL DFIR - Command Line Cheat Sheet v0.1
+	==========================================
+
+
+mkdir circl_dfir
+cd mkdir circl_dfir
+wget https://circl.lu/assets/files/circl-dfir.dd
+
+fdisk -l circl-dfir.dd
+
+sudo mount -o ro,offset=$((512*2048)) circl-dfir.dd /mnt/usb/
+ls /mnt/usb/
+
+mkdir dd
+cd dd
+cp /mnt/usb/dd/* .
+ls
+
+dd if=img_1.txt of=out1.txt bs=512
+md5sum img_1.txt
+md5sum out1.txt
+
+dd if=img_2.txt of=out2.txt bs=512f
+md5sum img_2.txt
+md5sum out2.txt
+
+
+dd if=img_3.txt bs=512 skip=0 count=1 status=none | less
+dd if=img_3.txt bs=512 skip=1 count=1 status=none | less
+dd if=img_3.txt bs=512 skip=2 count=1 status=none | less
+
+dd if=img_3.txt bs=1 skip=$((512*3)) count=16 status=none
+dd if=img_3.txt bs=16 skip=$((32*3)) count=1 status=none
+
+
+
+dc3dd if=/mnt/usb/carving/deleted.dd log=usb.log hash=md5 hash=sha1 ofsz=$((8*1024*1024)) ofs=usb.raw.000
+cat usb.raw.00* | md5sum
+
+
+
+mkdir carving
+cd carving/
+
+cp /mnt/usb/carving/deleted.dd .
+cp /mnt/usb/carving/formated.dd .
+
+mkdir out-d
+foremost -t all -i deleted.dd -o out-d/
+
+
+
+fsstat deleted.dd | less
+fls -r deleted.dd | less
+
+
+
+mkdir time
+cd time
+fls -r -m C: ../deleted.dd > c.body
+
+less c.body 
+mactime -b c.body > c.time
+
+
+
+
+
+mkdir string
+cd string/
+
+mmls ../circl-dfir.dd
+fsstat -o 2048 ../circl-dfir.dd | less
+
+blkls -e -o 2048 ../circl-dfir.dd | strings -a -td | grep -i paula
+echo $((157426/4096))
+
+blkcat -o 2048 ../circl-dfir.dd 38 | strings | less
+ifind -o 2048 -d 38 ../circl-dfir.dd
+
+ifind -o 2048 -d 38 ../circl-dfir.dd
+ffind -o 2048 ../circl-dfir.dd 0
+
+
+
+vol.py -f memdump.raw imageinfo
+
+vol.py -f memdump.raw --profile Win7SP1x86_23418 pslist | less
+vol.py -f memdump.raw --profile Win7SP1x86_23418 psscan | less
+vol.py -f memdump.raw --profile Win7SP1x86_23418 psxview | less
+
+vol.py -f memdump.raw --profile Win7SP1x86 netscan | less
+
+
+
+mkdir fs_time
+fls -r -o 206848 -m C: crypt_disk.raw > fs_time/c.body
+cd fs_time
+mactime -b c.body > c.time
+
+
+mkdir registry
+cp /cdrom/Windows/System32/config/SAM registry/
+cp /cdrom/Windows/System32/config/SECURITY registry/
+cp /cdrom/Windows/System32/config/SYSTEM registry/
+cp /cdrom/Windows/System32/config/SOFTWARE registry/
+
+cp /cdrom/Users/John/NTUSER.DAT registry/
+cp /cdrom/Users/John/AppData/Local/Microsoft/Windows/UsrClass.dat registry/
+cd registry/
+mkdir out
+
+rip.pl -f sam -r SAM > out/sam.txt
+rip.pl -f security -r SECURITY > out/security.txt
+rip.pl -f system -r SYSTEM > out/system.txt
+rip.pl -f software -r SOFTWARE > out/software.txt
+rip.pl -f ntuser -r NTUSER.DAT > out/ntuser.txt
+rip.pl -f usrclass -r UsrClass.dat > out/usrclass.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
