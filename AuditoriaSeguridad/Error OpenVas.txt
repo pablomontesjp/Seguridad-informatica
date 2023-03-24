@@ -1,0 +1,18 @@
+Buscar las librerias compartidas que no se encuentran
+
+$ ldd /usr/sbin/openvas
+
+# Buscamos las librerias en las que ponga "Not found"
+
+# Localizamos donde están las librerias originalmente
+
+$ sudo find / -name libopenvas_nasl.so
+
+# Cambiamos libopenvas_nasl.so con la librería que no hemos encontrado y creamos un enlace donde openvas está buscando las librerias.
+
+$ ln -s /usr/lib64/libopenvas_nasl.so.21 /lib/x86_64-linux-gnu/
+
+# Despues comprobamos si ya funciona
+
+$ openvas -s 
+
